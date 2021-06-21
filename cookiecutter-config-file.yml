@@ -1,0 +1,10 @@
+# This file contains values from Cookiecutter
+
+default_context:
+  project_name: "ez-parallel"
+  project_description: "Easy Parallel Multiprocessing"
+  organization: "Julien Rossi"
+  license: "MIT"
+  version: "0.1.0"
+  github_name: "j-rossi-nl"
+  email: "j.rossi@uva.nl"
