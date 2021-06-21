@@ -1,4 +1,4 @@
-from typing import Any, Callable, Iterator, NewType, Union
+from typing import Any, Callable, Iterator, Union
 
 import functools
 import logging
@@ -11,9 +11,9 @@ from threading import Thread
 import tqdm
 
 # Define new type for type hinting
-Queue = NewType("Queue", Union[multiprocessing.Queue, queue.Queue])
-QueueWorker = NewType("QueueWorker", Callable[[Queue, Queue], None])
-Work = NewType("Work", Callable[[Any], int])
+Queue = Union[multiprocessing.Queue, queue.Queue]
+QueueWorker = Callable[[Queue, Queue], None]
+Work = Callable[[Any], int]
 
 
 def queue_worker(func: Work) -> QueueWorker:
@@ -25,7 +25,7 @@ def queue_worker(func: Work) -> QueueWorker:
     """
 
     @functools.wraps(func)
-    def wrapper(in_queue: Queue, out_queue: Queue):
+    def wrapper(in_queue: Queue, out_queue: Queue) -> None:
         """
 
         :param in_queue: tasks to do
@@ -71,10 +71,10 @@ def multiprocess(
 
     # The parent process will  feed data to a 'to do' queue, the workers will read from this queue and feed a 'done'
     # queue that the parent process reads
-    todo_queue = multiprocessing.Queue(
+    todo_queue: Queue = multiprocessing.Queue(
         128
     )  # Not too big to avoid memory overload
-    done_queue = multiprocessing.Queue()
+    done_queue: Queue = multiprocessing.Queue()
 
     # This is the parent process
     # Launch the workers
@@ -96,7 +96,7 @@ def multiprocess(
     fillin.start()
 
     # Use the "done" queue to monitor process
-    with tqdm.tqdm(desc=description, total=total, smoothing=0.1) as pbar:
+    with tqdm.tqdm(desc=description, total=total) as pbar:
         while pbar.n < pbar.total:
             results: int = done_queue.get(True)
             pbar.update(n=results)
@@ -134,8 +134,10 @@ def multithread(
 
     # The parent process will  feed data to a 'to do' queue, the workers will read from this queue and feed a 'done'
     # queue that the parent process reads
-    todo_queue = queue.Queue(1024)  # Not too big to avoid memory overload
-    done_queue = queue.Queue()
+    todo_queue: Queue = queue.Queue(
+        1024
+    )  # Not too big to avoid memory overload
+    done_queue: Queue = queue.Queue()
 
     # Fill in the "to do" queue in a separate thread
     def _fill_todo_queue():
