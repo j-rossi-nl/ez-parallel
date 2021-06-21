@@ -7,7 +7,6 @@ from enum import Enum
 
 import typer
 from ez_parallel import __version__
-from ez_parallel.example import hello
 from rich.console import Console
 
 
@@ -62,5 +61,5 @@ def main(
         # If no color specified use random value from `Color` class
         color = random.choice(list(Color.__members__.values()))
 
-    greeting: str = hello(name)
+    greeting: str = name
     console.print(f"[bold {color}]{greeting}[/]")
