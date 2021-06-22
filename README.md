@@ -18,12 +18,16 @@ Easy Parallel Multiprocessing
 
 ## Installation
 
+With `pip` or `pip3`:
 ```bash
 pip install -U ez-parallel
 ```
+or
+```bash
+pip install ez-parallel
+```
 
-or install with `Poetry`
-
+With `Poetry`:
 ```bash
 poetry add ez-parallel
 ```
@@ -81,7 +85,7 @@ multiprocess(
   input_iterator_fn=iter_fn,
   total=nb_things,
   nb_workers=20,
-  description=str('Process the things')
+  description='Process the things'
 )
 
 ```
