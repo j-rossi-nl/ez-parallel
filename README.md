@@ -182,15 +182,14 @@ def random_file_name() -> str:
   return ''.join(random.choices(string.ascii_letters, k=32))  
 
 
-# Tmp folder
-tmp_folder = os.path.join(tempfile.gettempdir(), random_file_name())
-os.makedirs(tmp_folder)
+# All processes write in the same file
+# The OS will deal with concurrent access
+tmp_file = os.path.join(tempfile.gettempdir(), random_file_name())
 
 @queue_worker
 def work_one_thing(x: List[int]) -> int:
-  # do something
-  tmp_file = os.path.join(tmp_folder, random_file_name())
-  with open(tmp_file, 'w') as out:
+  # This call is blocking until the file can be written
+  with open(tmp_file, 'a') as out:
     for number in x:
       out.write(json.dumps({"number": number, "square": number ** 2}) + '\n')
   
@@ -214,19 +213,16 @@ multithread(
   description='Process the things'
 )
 
+# Collect all the data
+with open(tmp_file, 'r') as src:
+  data = [json.loads(line) for line in src] 
 
-# concatenate all the temporary files
-with open('final_results.jsonl', 'w') as out:
-  for f in glob.glob(os.path.join(tmp_folder, '*')):
-    with open(f) as src:
-      out.write(src.read())  
-
-# Delete temporary files / folder
-shutil.rmtree(tmp_folder)      
+# Delete temporary file
+os.remove(tmp_file)      
 
 ```
 
-### How to collection results in multithreading
+### How to collect results in multithreading
 
 A lot easier and straightforward, because all the threads share the same memory.
 
