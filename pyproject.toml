@@ -52,6 +52,9 @@ pydocstyle = "^5.1.1"
 pre-commit = "^2.9.3"
 pyarrow = "4.0.1"
 pandas = ">=0.21.0"
+elasticsearch-dsl = ">=7.0.0,<8.0.0"
+python-dotenv = "0.14.0"
+ipython = ">=7.0"
 
 [tool.black]
 # https://github.com/psf/black
