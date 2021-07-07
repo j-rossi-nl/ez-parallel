@@ -6,12 +6,10 @@ import tempfile
 import pandas as pd
 import pyarrow as pa
 import pyarrow.dataset as ds
-from ez_parallel import (
+from ez_parallel.misc import (
     batch_iterator,
     batch_iterator_from_iterable,
     batch_iterator_from_sliceable,
-    elasticsearch_batch_iterator,
-    elasticsearch_iterator,
     list_iterator,
     parquet_dataset_batch_iterator,
 )
@@ -103,8 +101,8 @@ def test_parquet_dataset():
     with tempfile.NamedTemporaryFile("w") as tmp:
         pd.DataFrame(data).to_parquet(tmp.name, engine="pyarrow")
         dataset: Any = ds.dataset(tmp.name)
-        dataset: ds.FileSystemDataset
-        gen, count = parquet_dataset_batch_iterator(dataset, batch_size)
+        dataset_cast: ds.FileSystemDataset = dataset
+        gen, count = parquet_dataset_batch_iterator(dataset_cast, batch_size)
 
         assert count == num_rows
 

@@ -99,10 +99,10 @@ def batch_iterator(
 
 
 try:
-    import elasticsearch_dsl
+    from elasticsearch_dsl import Search
 
     def elasticsearch_iterator(
-        s: elasticsearch_dsl.Search,
+        s: Search,
     ) -> Tuple[Callable[[], Iterator[Any]], int]:
         """
         Build a generator items retrieved from ElasticSearch from a Search object.
@@ -122,7 +122,7 @@ try:
         return _iterator, count
 
     def elasticsearch_batch_iterator(
-        s: elasticsearch_dsl.Search, batch_size: int
+        s: Search, batch_size: int
     ) -> Tuple[Callable[[], Iterator[Any]], int]:
         """
         Build a generator of items retrieved from ElasticSearch from a Search object.
@@ -145,13 +145,19 @@ try:
 
 
 except ImportError:
+    elasticsearch_dsl = None
+    Search = Any
 
-    def elasticsearch_iterator(*_, **__):
+    def elasticsearch_iterator(
+        s: Search,
+    ) -> Tuple[Callable[[], Iterator[Any]], int]:
         raise NotImplementedError(
             "Install elasticsearch_dsl in order to use the function elasticsearch_iterator"
         )
 
-    def elasticsearch_batch_iterator(*_, **__):
+    def elasticsearch_batch_iterator(
+        s: Search, batch_size: int
+    ) -> Tuple[Callable[[], Iterator[Any]], int]:
         raise NotImplementedError(
             "Install elasticsearch_dsl in order to use the function elasticsearch_batch_iterator"
         )
@@ -161,9 +167,10 @@ try:
     import pyarrow as pa
     import pyarrow.dataset as ds
     import pyarrow.parquet as pq
+    from pyarrow.dataset import FileSystemDataset
 
     def parquet_dataset_batch_iterator(
-        dataset: ds.FileSystemDataset, batch_size: int
+        dataset: FileSystemDataset, batch_size: int
     ) -> Tuple[Callable[[], Iterator[Any]], int]:
         """
         Build a generator of items retrieved from a Parquet Dataset.
@@ -171,6 +178,7 @@ try:
         Each call to next() will return a batch, i.e. an object pyarrow.RecordBatch.
         Batches will not all have the same size.
 
+        :rtype: object
         :param dataset: a Parquet Dataset object
         :param batch_size: number of items per batch
         :return: Tuple generator, number of items (NOT number of batches)
@@ -178,6 +186,7 @@ try:
 
         def _iterator():
             if pa.__version__ < "4.0.0":
+                # noinspection PyArgumentList
                 for scan_task in dataset.scan(batch_size=batch_size):
                     yield from scan_task.execute()
             else:
@@ -188,8 +197,12 @@ try:
 
 
 except ImportError:
+    pa, ds, pq = None, None, None
+    FileSystemDataset = Any
 
-    def parquet_dataset_batch_iterator(*_, **__):
+    def parquet_dataset_batch_iterator(
+        dataset: FileSystemDataset, batch_size: int
+    ) -> Tuple[Callable[[], Iterator[Any]], int]:
         raise NotImplementedError(
             "Install pyarrow in order to use the function parquet_dataset_batch_iterator"
         )
