@@ -38,15 +38,6 @@ def version_callback(value: bool):
 
 @app.command(name="")
 def main(
-    name: str = typer.Option(..., help="Name of person to greet."),
-    color: Optional[Color] = typer.Option(
-        None,
-        "-c",
-        "--color",
-        "--colour",
-        case_sensitive=False,
-        help="Color for name. If not specified then choice will be random.",
-    ),
     version: bool = typer.Option(
         None,
         "-v",
@@ -56,10 +47,8 @@ def main(
         help="Prints the version of the ez-parallel package.",
     ),
 ):
-    """Prints a greeting for a giving name."""
-    if color is None:
-        # If no color specified use random value from `Color` class
-        color = random.choice(list(Color.__members__.values()))
+    pass
 
-    greeting: str = name
-    console.print(f"[bold {color}]{greeting}[/]")
+
+if __name__ == "__main__":
+    app()
