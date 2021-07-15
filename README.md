@@ -5,6 +5,7 @@
 [![Build status](https://github.com/j-rossi-nl/ez-parallel/workflows/build/badge.svg?branch=master&event=push)](https://github.com/j-rossi-nl/ez-parallel/actions?query=workflow%3Abuild)
 [![Python Version](https://img.shields.io/pypi/pyversions/ez-parallel.svg)](https://pypi.org/project/ez-parallel/)
 [![Dependencies Status](https://img.shields.io/badge/dependencies-up%20to%20date-brightgreen.svg)](https://github.com/j-rossi-nl/ez-parallel/pulls?utf8=%E2%9C%93&q=is%3Apr%20author%3Aapp%2Fdependabot)
+[![codecov](https://codecov.io/gh/j-rossi-nl/ez-parallel/branch/master/graph/badge.svg?token=VJE8DX0BH3)](https://codecov.io/gh/j-rossi-nl/ez-parallel)
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Security: bandit](https://img.shields.io/badge/security-bandit-green.svg)](https://github.com/PyCQA/bandit)
