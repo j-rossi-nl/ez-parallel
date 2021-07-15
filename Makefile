@@ -120,7 +120,8 @@ codestyle:
 
 .PHONY: test
 test:
-	poetry run pytest
+	poetry run pytest --cov=ez_parallel --cov-config=.coveragerc
+	poetry run coverage xml -i
 
 .PHONY: lint
 lint: test check-safety check-style
