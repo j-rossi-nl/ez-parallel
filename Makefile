@@ -121,6 +121,7 @@ codestyle:
 .PHONY: test
 test:
 	poetry run pytest --cov=./
+	poetry run coverage xml -i
 
 .PHONY: lint
 lint: test check-safety check-style
