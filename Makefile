@@ -110,7 +110,7 @@ check-style:
 	$(BLACK_COMMAND_FLAG)poetry run black --config pyproject.toml --diff --check ./
 	$(DARGLINT_COMMAND_FLAG)poetry run darglint -v 2 **/*.py
 	$(ISORT_COMMAND_FLAG)poetry run isort --settings-path pyproject.toml --check-only **/*.py
-	$(MYPY_COMMAND_FLAG)poetry run mypy --config-file setup.cfg ez_parallel tests/**/*.py
+	$(MYPY_COMMAND_FLAG)poetry run mypy --config-file setup.cfg ez_parallel tests/*.py
 
 .PHONY: codestyle
 codestyle:
@@ -122,6 +122,7 @@ codestyle:
 test:
 	poetry run pytest --cov=ez_parallel --cov-config=.coveragerc
 	poetry run coverage xml -i
+	poetry run coverage html
 
 .PHONY: lint
 lint: test check-safety check-style

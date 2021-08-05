@@ -6,7 +6,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "ez-parallel"
-version = "0.1.6"
+version = "0.1.7"
 description = "Easy Parallel Multiprocessing"
 readme = "README.md"
 authors = [
@@ -36,8 +36,7 @@ python = "^3.7"
 importlib_metadata = {version = "^1.6.0", python = "<3.8"}
 typer = {extras = ["all"], version = "^0.3.2"}
 rich = "^9.8.2"
-tqdm = "^4.61.1"
-coverage = "^5.5"
+coverage = ">=6.0b1"
 
 [tool.poetry.dev-dependencies]
 darglint = "^1.5.8"

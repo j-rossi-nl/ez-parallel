@@ -8,7 +8,7 @@ import time
 from multiprocessing import Pool, current_process
 from threading import Thread
 
-import tqdm
+from rich.progress import Progress
 
 # Define new type for type hinting
 Queue = Union[multiprocessing.Queue, queue.Queue]
@@ -96,10 +96,7 @@ def multiprocess(
     fillin.start()
 
     # Use the "done" queue to monitor process
-    with tqdm.tqdm(desc=description, total=total) as pbar:
-        while pbar.n < pbar.total:
-            results: int = done_queue.get(True)
-            pbar.update(n=results)
+    _progress_bar(done_queue, description=description, total=total)
 
     # At this point, all threads are just blocked waiting to read something from the now empty 'to do' queue.
     assert todo_queue.empty()
@@ -160,11 +157,16 @@ def multithread(
         t.start()
 
     # Use the "done" queue to monitor process
-    with tqdm.tqdm(desc=description, total=total, smoothing=0.1) as pbar:
-        while pbar.n < pbar.total:
-            results: int = done_queue.get(True)
-            pbar.update(n=results)
+    _progress_bar(done_queue, description=description, total=total)
 
     # At this point, all threads are just blocked waiting to read something from the now empty 'to do' queue.
     assert todo_queue.empty()
     assert done_queue.empty()
+
+
+def _progress_bar(queue: Queue, description: str, total: int) -> None:
+    with Progress() as progress:
+        pbar = progress.add_task(description=description, total=total)
+        while not progress.finished:
+            results: int = queue.get(True)
+            progress.update(pbar, advance=results)
