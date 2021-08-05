@@ -8,16 +8,14 @@ from functools import reduce
 import pandas as pd
 import pyarrow as pa
 import pyarrow.dataset as ds
-from ez_parallel import (
+from ez_parallel.misc import (
     batch_iterator,
     batch_iterator_from_iterable,
     batch_iterator_from_sliceable,
     list_iterator,
-    multiprocess,
-    multithread,
     parquet_dataset_batch_iterator,
-    queue_worker,
 )
+from ez_parallel.multiprocess import multiprocess, multithread, queue_worker
 
 
 def test_batch_iterator():
@@ -143,7 +141,7 @@ def test_parallel():
     """Test parallel processing"""
 
     @queue_worker
-    def square(x: float):
+    def square(x: float) -> int:
         _ = x ** 2
         time.sleep(0.1)
         return 1
@@ -163,7 +161,7 @@ def test_parallel():
 
 def test_multithread():
     @queue_worker
-    def square(x: float):
+    def square(x: float) -> int:
         _ = x ** 2
         time.sleep(0.1)
         return 1
