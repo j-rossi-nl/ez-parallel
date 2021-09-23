@@ -8,7 +8,14 @@ import time
 from multiprocessing import Pool, current_process
 from threading import Thread
 
-from rich.progress import Progress
+from rich.progress import (
+    BarColumn,
+    Progress,
+    SpinnerColumn,
+    TextColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+)
 
 # Define new type for type hinting
 Queue = Union[multiprocessing.Queue, queue.Queue]
@@ -164,9 +171,16 @@ def multithread(
     assert done_queue.empty()
 
 
-def _progress_bar(queue: Queue, description: str, total: int) -> None:
-    with Progress() as progress:
+def _progress_bar(queue_: Queue, description: str, total: int) -> None:
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
+        TimeRemainingColumn(),
+        TimeElapsedColumn(),
+    ) as progress:
         pbar = progress.add_task(description=description, total=total)
         while not progress.finished:
-            results: int = queue.get(True)
+            results: int = queue_.get(True)
             progress.update(pbar, advance=results)
