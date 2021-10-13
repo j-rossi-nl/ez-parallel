@@ -6,7 +6,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "ez-parallel"
-version = "0.1.10"
+version = "0.1.11"
 description = "Easy Parallel Multiprocessing"
 readme = "README.md"
 authors = [
